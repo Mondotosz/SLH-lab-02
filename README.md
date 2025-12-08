@@ -36,7 +36,8 @@ Les fonctionnalités du site sont les suivantes :
 
 ## Rendu
 
-Le `README.md` contenant les réponses aux questions et le code source dans une archive `.crate`.
+Le `README.md` contenant les réponses aux questions et le code source dans une
+archive `.crate`.
 
 Pour générer l'archive avec le code source, la commande :
 
@@ -52,13 +53,17 @@ Génère l'archive dans le répertoire `target/package/`.
 
 1. Quel serait l'impact si on se fait voler notre secret client (et client id) ?
 
-2. Comment peut-on protéger notre secret client, afin d'éviter qu'il soit publier ou voler ?
+2. Comment peut-on protéger notre secret client, afin d'éviter qu'il soit
+   publier ou voler ?
 
 3. Quels est la différences entre OAuth2 et LDAP ?
 
-4. Est-ce que le mot de passe transite par votre serveur ? Est-ce qu'on peut le voler ?
+4. Est-ce que le mot de passe transite par votre serveur ? Est-ce qu'on peut le
+   voler ?
 
-5. Si vous êtes mal intentionné et que vous administrez un serveur utilisant l'OAuth2 Github. Comment ferriez-vous pour obtenir plus d'accès au nom de vos utilisateur ? Et donnez des exemples.
+5. Si vous êtes mal intentionné et que vous administrez un serveur utilisant
+   l'OAuth2 Github. Comment ferriez-vous pour obtenir plus d'accès au nom de vos
+   utilisateur ? Et donnez des exemples.
 
 6. Pour les 2 captures d'écran d'écran de consentement de google, indiqué quels
    scopes on probablement été demander par le site web.
@@ -79,7 +84,8 @@ Génère l'archive dans le répertoire `target/package/`.
 
 ## Tâches principales
 
-Pour lancer l'application vous devez être dans le même répertoire que `Cargo.toml` :
+Pour lancer l'application vous devez être dans le même répertoire que
+`Cargo.toml` :
 
 ```sh
 …$ ls -A
@@ -92,8 +98,10 @@ Cargo.lock  Cargo.toml  data  image  README.md  Rocket.toml  scope-01.png  scope
 …
 ```
 
-Compléter tout les `todo!()` du code, lors de `cargo test`, la liste des fichiers en contenant encore est affiché.
+Compléter tout les `todo!()` du code, lors de `cargo test`, la liste des
+fichiers en contenant encore est affiché.
 
 ## Fournisseur OAuth2
 
-Le fournisseur OAuth2 pour ce labo est Github; La création des token se passe sur la page : <https://github.com/settings/developers>.
+Le fournisseur OAuth2 pour ce labo est Github; La création des token se passe
+sur la page : <https://github.com/settings/developers>.
