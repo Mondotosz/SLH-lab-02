@@ -53,6 +53,10 @@ Génère l'archive dans le répertoire `target/package/`.
 
 1. Quel serait l'impact si on se fait voler notre secret client (et client id) ?
 
+   > Une autre application peut usurper l'identité de l'application du côté de
+   > GitHub. Dans le sens où nos utilisateurs ont acceptés de donner certaines
+   > autorisations sur leur compte GitHub tel que nom d'utilisateur, email, ... Et
+
 2. Comment peut-on protéger notre secret client, afin d'éviter qu'il soit
    publier ou voler ?
 
