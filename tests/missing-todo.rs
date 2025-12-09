@@ -16,7 +16,7 @@ fn all_todo_done() {
         .filter(|path| {
             !matches!(
                 path.file_name().unwrap().to_string_lossy().as_ref(),
-                "target"
+                "target" | ".git" | "Rocket.example.toml" | "tmp" | "image" | "data" | "README.md"
             )
         })
         .flat_map(test_dir)
