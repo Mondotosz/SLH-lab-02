@@ -2,20 +2,14 @@
 
 use std::path::Path;
 
+use log::error;
 use reqwest::{
     Url,
     header::{HeaderMap, HeaderValue},
 };
 use rocket::{
-    FromForm, Request, State, catch, catchers,
-    form::Form,
-    fs::TempFile,
-    get,
-    http::{Cookie, CookieJar, SameSite},
-    main, post,
-    response::Redirect,
-    routes,
-    serde::json::Json,
+    FromForm, Request, State, catch, catchers, form::Form, fs::TempFile, get, http::CookieJar,
+    main, post, response::Redirect, routes, serde::json::Json,
 };
 use rocket_dyn_templates::{Template, context};
 use rocket_oauth2::{OAuth2, TokenResponse};
@@ -27,17 +21,21 @@ use crate::database::user;
 mod auth;
 mod database;
 
+use auth::USER_ID_KEY;
+
 struct GitHub;
 
 // This route calls `get_redirect`, which sets up a token request and
 // returns a `Redirect` to the authorization endpoint.
 #[get("/login/github")]
-fn github_login(oauth2: todo!(), cookies: &CookieJar<'_>) -> Redirect {
+fn github_login(oauth2: OAuth2<GitHub>, cookies: &CookieJar<'_>) -> Redirect {
     // We want the "user:read" scope. For some providers, scopes may be
     // pre-selected or restricted during application registration. We could
     // use `&[]` instead to not request any scopes, but usually scopes
     // should be requested during registation, in the redirect, or both.
-    todo!()
+    oauth2
+        .get_redirect(cookies, &["user:read"])
+        .expect("Failed to get redirect for github")
 }
 
 // This route, mounted at the application's Redirect URI, uses the
@@ -45,11 +43,11 @@ fn github_login(oauth2: todo!(), cookies: &CookieJar<'_>) -> Redirect {
 // the token.
 #[get("/auth/github")]
 async fn github_callback(
-    token: todo!(),
+    token: TokenResponse<GitHub>,
     cookies: &CookieJar<'_>,
     users: &State<user::Db>,
 ) -> Option<Redirect> {
-    let access_token = todo!();
+    let access_token = token.access_token().to_string();
 
     #[derive(Debug, Deserialize)]
     struct GitHubUser {
@@ -97,7 +95,7 @@ async fn github_callback(
     //
     // (private cookie are encrypted using authenticated encryption and key setted in Rocket
     // config)
-    cookies.add_private(todo!("see auth.rs"));
+    cookies.add_private((USER_ID_KEY, user_id.to_string()));
 
     Some(Redirect::to("/"))
 }
@@ -114,7 +112,7 @@ fn login() -> Template {
 }
 #[get("/logout")]
 fn logout(cookies: &CookieJar<'_>) -> Redirect {
-    cookies.remove_private(todo!());
+    cookies.remove_private(USER_ID_KEY);
     Redirect::to("/")
 }
 #[get("/create")]
@@ -128,8 +126,14 @@ fn reset_db(
     _users: &State<user::Db>,
     _posts: &State<database::post::Db>,
 ) -> Redirect {
-    todo!("users.clear(&user);");
-    todo!("posts.clear(&user);");
+    _users
+        .clear(&_user)
+        .inspect_err(|err| error!("Error while clearing users: {err}"))
+        .ok();
+    _posts
+        .clear(&_user)
+        .inspect_err(|err| error!("Error while clearing posts: {err}"))
+        .ok();
     Redirect::to("/")
 }
 #[get("/home")]
@@ -168,7 +172,7 @@ struct CreateForm<'r> {
 
 #[post("/post/create", data = "<data>")]
 async fn perform_create_port(
-    user: todo!(),
+    user: ConnectedUser,
     data: Form<CreateForm<'_>>,
     posts: &State<database::post::Db>,
 ) -> Option<Redirect> {
@@ -204,7 +208,7 @@ struct PerformLike {
 
 #[post("/post/like", data = "<data>")]
 async fn perform_like(
-    user: todo!(),
+    user: ConnectedUser,
     data: Json<PerformLike>,
     posts: &State<database::post::Db>,
 ) -> Option<&'static str> {

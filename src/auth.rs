@@ -9,6 +9,8 @@ use serde::Serialize;
 
 use crate::database::user;
 
+pub static USER_ID_KEY: &str = "user_id";
+
 #[derive(Serialize)]
 pub struct ConnectedUser {
     id: u64,
@@ -43,7 +45,7 @@ impl<'r> FromRequest<'r> for ConnectedUser {
         };
 
         cookies
-            .get_private(todo!())
+            .get_private(USER_ID_KEY)
             .and_then(|cookie| cookie.value().parse().ok())
             .and_then(|id| users.get(&id))
             .map(|user_db| ConnectedUser {
