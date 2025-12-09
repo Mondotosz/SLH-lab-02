@@ -73,6 +73,7 @@ impl<T> DbTable<T> {
     }
 }
 impl<K: Eq + Hash, V> DbTable<HashMap<K, V>> {
+    #[allow(dead_code)]
     pub fn create(&self, key: K, value: V) -> Result<bool>
     where
         K: Serialize,
@@ -97,6 +98,8 @@ impl<K: Eq + Hash, V> DbTable<HashMap<K, V>> {
     {
         self.read().ok()?.get(key).cloned()
     }
+
+    #[allow(dead_code)]
     pub fn exists<Q>(&self, key: &Q) -> Result<bool>
     where
         K: Borrow<Q>,
